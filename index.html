@@ -1,68 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>IP Lookup Tool</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
-        }
-        #container {
-            background-color: #4d4d4d;
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 300px;
-        }
-        input, button {
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: none;
-        }
-        button {
-            background-color: #007BFF;
-            color: white;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Shoti</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="container">
-        <h1>IP Lookup Tool</h1>
-        <input type="text" id="ipInput" placeholder="Enter IP address" />
-        <button onclick="lookupIP()">Search</button>
-        <div id="result"></div>
-    </div>
+    <h1>Random Shoti</h1>
+    <video id="videoPlayer" controls></video>
+    <button id="nextVideo">Next Video</button>
+    <button id="play">Play</button>
 
-    <script>
-        async function lookupIP() {
-            const ip = document.getElementById('ipInput').value;
-            const response = await fetch(`http://ip-api.com/json/${ip}`);
-            const data = await response.json();
-            if (data.status === "success") {
-                document.getElementById('result').innerHTML = `
-                    <p><strong>IP:</strong> ${data.query}</p>
-                    <p><strong>City:</strong> ${data.city}</p>
-                    <p><strong>Region:</strong> ${data.regionName}</p>
-                    <p><strong>Country:</strong> ${data.country}</p>
-                    <p><strong>Latitude:</strong> ${data.lat}</p>
-                    <p><strong>Longitude:</strong> ${data.lon}</p>
-                `;
-            } else {
-                document.getElementById('result').innerHTML = `<p>Invalid IP address</p>`;
-            }
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
