@@ -6,98 +6,92 @@
     <title>IP Lookup Tool</title>
     <style>
         body {
-            background-image: url('https://images.unsplash.com/photo-1586339949916-3e9457bef6d8');
+            font-family: Arial, sans-serif;
+            background-image: url('background.jpg');
             background-size: cover;
             color: white;
             text-align: center;
-            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
+
         .container {
-            margin-top: 100px;
+            background-color: rgba(0, 0, 0, 0.7);
             padding: 20px;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: inline-block;
             border-radius: 10px;
         }
-        .container img {
-            width: 100px;
-        }
-        .input-field {
-            width: 80%;
+
+        input[type=text] {
             padding: 10px;
-            margin: 10px 0;
+            margin: 10px;
             border-radius: 5px;
             border: none;
+            width: calc(100% - 42px);
         }
-        .button {
+
+        button {
             padding: 10px 20px;
-            background-color: #333;
-            border: none;
             border-radius: 5px;
+            border: none;
+            background-color: #28a745;
             color: white;
             cursor: pointer;
         }
-        .button:hover {
-            background-color: #555;
+
+        button:hover {
+            background-color: #218838;
         }
+
         .result {
             margin-top: 20px;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.1);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <img src="data:image/jpeg;base64,/* base64 data here */" alt="Ghost Icon">
         <h1>IP LOOKUP TOOL</h1>
-        <input type="text" id="ipInput" class="input-field" placeholder="Enter IP address">
-        <button class="button" onclick="lookupIP()">SEARCH</button>
-        <div class="result" id="result"></div>
-        <button class="button" onclick="downloadInfo()">DOWNLOAD THE FULL INFO</button>
+        <input type="text" id="ip-input" placeholder="Enter IP Address" required>
+        <button onclick="lookupIP()">SEARCH</button>
+        <div id="result" class="result"></div>
     </div>
-
     <script>
-        let ipData = null;
-
-        async function lookupIP() {
-            const ip = document.getElementById('ipInput').value;
+        function lookupIP() {
+            const ip = document.getElementById('ip-input').value;
             const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = 'Loading...';
 
-            try {
-                const response = await fetch(`https://deku-rest-api-ywad.onrender.com/iplu?ip=${ip}`);
-                const data = await response.json();
-
-                ipData = data;
-
-                if (response.ok) {
-                    resultDiv.innerHTML = `
-                        <p><strong>IP:</strong> ${data.ip ?? 'N/A'}</p>
-                        <p><strong>Continent:</strong> ${data.continent ?? 'N/A'}</p>
-                        <p><strong>Country:</strong> ${data.country ?? 'N/A'}</p>
-                        <p><strong>Official Name:</strong> ${data.official_name ?? 'N/A'}</p>
-                    `;
-                } else {
-                    resultDiv.innerHTML = `<p>Error: ${data.message}</p>`;
-                }
-            } catch (error) {
-                resultDiv.innerHTML = `<p>Error: ${error.message}</p>`;
-            }
+            fetch(`http://ip-api.com/json/${ip}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        resultDiv.innerHTML = `
+                            <h2>IP: ${data.query}</h2>
+                            <h2>Continent: ${data.continent}</h2>
+                            <h2>Country: ${data.country}</h2>
+                            <h2>Official Name: ${data.country}</h2>
+                            <a href="#" onclick="downloadInfo('${data.query}', '${data.continent}', '${data.country}')">Download the Full Info</a>
+                        `;
+                    } else {
+                        resultDiv.innerHTML = '<h2>Invalid IP address or request failed.</h2>';
+                    }
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `<h2>Error: ${error.message}</h2>`;
+                });
         }
 
-        function downloadInfo() {
-            if (!ipData) {
-                alert('Please search for an IP address first.');
-                return;
-            }
-
-            const dataStr = JSON.stringify(ipData, null, 2);
-            const blob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${ipData.ip ?? 'IP_Info'}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
+        function downloadInfo(ip, continent, country) {
+            const info = `IP: ${ip}\nContinent: ${continent}\nCountry: ${country}\nOfficial Name: ${country}`;
+            const blob = new Blob([info], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'info.txt';
+            link.click();
         }
     </script>
 </body>
