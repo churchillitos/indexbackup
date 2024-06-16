@@ -7,91 +7,59 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-image: url('background.jpg');
+            background: url('https://www.example.com/your-background-image.jpg') no-repeat center center fixed;
             background-size: cover;
             color: white;
             text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100vh;
         }
-
         .container {
-            background-color: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.6);
             padding: 20px;
             border-radius: 10px;
         }
-
-        input[type=text] {
+        input[type="text"], button {
             padding: 10px;
             margin: 10px;
             border-radius: 5px;
             border: none;
-            width: calc(100% - 42px);
+            font-size: 16px;
         }
-
         button {
-            padding: 10px 20px;
-            border-radius: 5px;
-            border: none;
-            background-color: #28a745;
+            background-color: #007BFF;
             color: white;
             cursor: pointer;
         }
-
         button:hover {
-            background-color: #218838;
-        }
-
-        .result {
-            margin-top: 20px;
-            padding: 20px;
-            border-radius: 5px;
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>IP LOOKUP TOOL</h1>
-        <input type="text" id="ip-input" placeholder="Enter IP Address" required>
-        <button onclick="lookupIP()">SEARCH</button>
-        <div id="result" class="result"></div>
+        <h1>IP Lookup Tool</h1>
+        <input type="text" id="ipInput" placeholder="Enter IP Address" />
+        <button onclick="lookupIP()">Search</button>
+        <div id="result"></div>
     </div>
+
     <script>
-        function lookupIP() {
-            const ip = document.getElementById('ip-input').value;
-            const resultDiv = document.getElementById('result');
-
-            fetch(`http://ip-api.com/json/${ip}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        resultDiv.innerHTML = `
-                            <h2>IP: ${data.query}</h2>
-                            <h2>Continent: ${data.continent}</h2>
-                            <h2>Country: ${data.country}</h2>
-                            <h2>Official Name: ${data.country}</h2>
-                            <a href="#" onclick="downloadInfo('${data.query}', '${data.continent}', '${data.country}')">Download the Full Info</a>
-                        `;
-                    } else {
-                        resultDiv.innerHTML = '<h2>Invalid IP address or request failed.</h2>';
-                    }
-                })
-                .catch(error => {
-                    resultDiv.innerHTML = `<h2>Error: ${error.message}</h2>`;
-                });
-        }
-
-        function downloadInfo(ip, continent, country) {
-            const info = `IP: ${ip}\nContinent: ${continent}\nCountry: ${country}\nOfficial Name: ${country}`;
-            const blob = new Blob([info], { type: 'text/plain' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'info.txt';
-            link.click();
+        async function lookupIP() {
+            const ip = document.getElementById('ipInput').value;
+            const response = await fetch(`https://api.bigdatacloud.net/data/ip-geolocation?ip=${ip}&localityLanguage=en`);
+            const data = await response.json();
+            document.getElementById('result').innerHTML = `
+                <p>IP: ${data.ip}</p>
+                <p>Country: ${data.countryName}</p>
+                <p>City: ${data.locality}</p>
+                <p>Latitude: ${data.location.latitude}</p>
+                <p>Longitude: ${data.location.longitude}</p>
+            `;
         }
     </script>
 </body>
