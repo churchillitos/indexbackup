@@ -1,34 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IP Lookup Tool</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: url('https://www.example.com/your-background-image.jpg') no-repeat center center fixed;
-            background-size: cover;
-            color: white;
-            text-align: center;
-            margin: 0;
-            padding: 0;
             display: flex;
-            flex-direction: column;
             justify-content: center;
+            align-items: center;
             height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
         }
-        .container {
-            background: rgba(0, 0, 0, 0.6);
+        #container {
+            background-color: #4d4d4d;
+            color: white;
             padding: 20px;
             border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
         }
-        input[type="text"], button {
+        input, button {
             padding: 10px;
-            margin: 10px;
+            margin: 10px 0;
             border-radius: 5px;
             border: none;
-            font-size: 16px;
         }
         button {
             background-color: #007BFF;
@@ -41,9 +38,9 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div id="container">
         <h1>IP Lookup Tool</h1>
-        <input type="text" id="ipInput" placeholder="Enter IP Address" />
+        <input type="text" id="ipInput" placeholder="Enter IP address" />
         <button onclick="lookupIP()">Search</button>
         <div id="result"></div>
     </div>
@@ -51,25 +48,19 @@
     <script>
         async function lookupIP() {
             const ip = document.getElementById('ipInput').value;
-            const url = `https://ipapi.co/${ip}/json/`;
-
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                if (data.error) {
-                    document.getElementById('result').innerHTML = `<p>${data.reason}</p>`;
-                } else {
-                    document.getElementById('result').innerHTML = `
-                        <p><strong>IP:</strong> ${data.ip}</p>
-                        <p><strong>City:</strong> ${data.city}</p>
-                        <p><strong>Region:</strong> ${data.region}</p>
-                        <p><strong>Country:</strong> ${data.country_name}</p>
-                        <p><strong>Latitude:</strong> ${data.latitude}</p>
-                        <p><strong>Longitude:</strong> ${data.longitude}</p>
-                    `;
-                }
-            } catch (error) {
-                document.getElementById('result').innerHTML = `<p>Error: ${error.message}</p>`;
+            const response = await fetch(`http://ip-api.com/json/${ip}`);
+            const data = await response.json();
+            if (data.status === "success") {
+                document.getElementById('result').innerHTML = `
+                    <p><strong>IP:</strong> ${data.query}</p>
+                    <p><strong>City:</strong> ${data.city}</p>
+                    <p><strong>Region:</strong> ${data.regionName}</p>
+                    <p><strong>Country:</strong> ${data.country}</p>
+                    <p><strong>Latitude:</strong> ${data.lat}</p>
+                    <p><strong>Longitude:</strong> ${data.lon}</p>
+                `;
+            } else {
+                document.getElementById('result').innerHTML = `<p>Invalid IP address</p>`;
             }
         }
     </script>
